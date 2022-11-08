@@ -9,7 +9,6 @@ function _init()
 	init_text()
 	state=3
 	alreadyc=false
-	ifpiece=false
 	camx=0
 	camy=0
 end
@@ -47,16 +46,16 @@ end
 
 function draw_game()
 	cls()
-	draw_logo()
 	draw_map()
 	draw_player()
 	draw_prouts()
-	draw_score()
+	draw_ui()
 	draw_message()
 	spawn_win()
 	for i=0,15 do
  		pal(i,i+128,1)
  end
+ 
 end
 -->8
 --map
@@ -79,7 +78,7 @@ function spawn_hotdogs()
 	while compteurh!=8 do
 		
 		hotdogx = flr(rnd(30))
-		hotdogy = flr(rnd(30))
+		hotdogy = flr(rnd(15))
 
 
 		new_hotdog={
@@ -192,7 +191,7 @@ end
 -->8
 --score
 
-function draw_score()
+function draw_ui()
 	palt(0,false)
 	palt(12,true)
 	spr(48,camx+2,camy+2)
@@ -442,8 +441,8 @@ function draw_text()
 		end
 	end
 	
-	local x=64-maxw*2-1
-	local y=48
+	local x=(camx+40)-maxw*2-1
+	local y=(camy+110)
 	local w=x+(maxw*4) --4=largeur caracteres
 	local h=y+#text.str*6
 	
@@ -454,7 +453,7 @@ function draw_text()
 	--write text
 	for i=1,#text.str do
 		local txt=text.str[i]
-		local tx=64-#txt*2 --pour centrer texte
+		local tx=(camx+40)-#txt*2 --pour centrer texte
 		local ty=y-5+(i*6) --hauteur texte=6px
 		print(txt,tx,ty,2)
 	end
