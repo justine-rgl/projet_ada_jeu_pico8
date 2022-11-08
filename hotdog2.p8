@@ -275,6 +275,7 @@ function draw_gameover()
 	print("game over",45,60,10)
 	print("press ❎ to play again"
 	,20,70,7)
+	text.active=false
 end
 
 function update_gameover()
@@ -323,6 +324,7 @@ function draw_win()
 	print("you win!",48,60,10)
 	print("press ❎ to play again"
 	,19,70,7)
+	text.active=false
 end
 
 function update_win()
