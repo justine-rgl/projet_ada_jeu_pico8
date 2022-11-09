@@ -5,12 +5,12 @@ function _init()
 	create_player()
 	prouts={}
 	spawn_hotdogs()
-	spawn_trap()
+	spawn_champi()
 	init_text()
 	state=3
 	if state==3 then music(19)
 	end
-	alreadyc=false
+	is_there_ball=false
 	camx=0
 	camy=0
 end
@@ -25,13 +25,13 @@ end
 function update_game()
 	player_movement()
 	update_camera()
-	interact()
-	interact_item()
-	interact_win()
+	interact_hotdog()
+	interact_champi()
+	interact_ball()
 	loose()
 	update_prouts()
-	count_time()
-	coin_del()
+	count_ball_time()
+	delete_ball()
 	update_text()
 end
 
@@ -52,9 +52,9 @@ function draw_game()
 	draw_map()
 	draw_player()
 	draw_prouts()
-	draw_ui()
+	draw_score()
 	draw_message()
-	spawn_win()
+	spawn_ball()
 end
 -->8
 --map
@@ -119,7 +119,7 @@ function create_player()
 		sprite=32,
 		f=true,--add to
 		hotdogs=0,
-		items=0
+		champi=0
 	}
 end
 
@@ -131,9 +131,9 @@ function player_movement()
 	if (btnp(⬇️)) newy+=1
 	if (btnp(⬆️)) newy-=1
 	
-	interact(newx,newy)
-	interact_item(newx,newy)
-	interact_win(newx,newy)
+	interact_hotdog(newx,newy)
+	interact_champi(newx,newy)
+	interact_ball(newx,newy)
 	
 	if not check_flag(0,newx,newy) then
 		p.x=mid(0,newx,30 )
@@ -149,7 +149,7 @@ function update_camera()
 	camera(camx,camy)
 end
 
-function interact(x,y)
+function interact_hotdog(x,y)
 	if check_flag(1,x,y) then
 		pick_hotdog(x,y)
 		create_prout(p.x*8,p.y*8)
@@ -190,15 +190,15 @@ end
 -->8
 --score
 
-function draw_ui()
+function draw_score()
 	palt(0,false)
 	palt(12,true)
 	spr(48,camx+2,camy+2)
-	print_outline("X"
+	print_score_outline("X"
 	..p.hotdogs,camx+2+8,camy+2+2)
 end
 
-function print_outline(text,x,y)
+function print_score_outline(text,x,y)
 	print(text,x-1,y,0)	
 	print(text,x+1,y,0)
 	print(text,x,y-1,0)
@@ -206,54 +206,42 @@ function print_outline(text,x,y)
 	print(text,x,y,7)	
 end
 -->8
---message 
+--champi gameover
 
-message=""
-
-function create_message(mess)
-	message = mess
-end
-
-function draw_message()
-	print(message,20,20,5)
-end 
--->8
---trap item gameover
-
-function pick_itemw(x,y)
+function pick_champi(x,y)
 	sfx(1)
 	mset(x,y,3)
 end
 
-function interact_item(x,y)
+function interact_champi(x,y)
 	if check_flag(4,x,y) then
-				pick_itemw(x,y)
+				pick_champi(x,y)
 				p.sprite=33
 				p.hotdogs-=1
 	end
 end
 
-function spawn_trap()
-compteurt=0
-	
-	while compteurt!=10 do
-		trapx = flr(rnd(30))
-		trapy = flr(rnd(30))
+function spawn_champi()
+	compteur_champi=0
 		
-		new_trap={
-			x=trapx*8,
-			y=trapy*8
-		}
-
-		if (check_flag(3,trapx,trapy) 
-					and trapx!=7 
-					and trapy!=8)
-		then
-		mset(trapx,trapy,36)
-		compteurt+=1
+		while compteur_champi!=10 do
+			champix = flr(rnd(30))
+			champiy = flr(rnd(30))
+			
+			new_champi={
+				x=champix*8,
+				y=champiy*8
+			}
+	
+			if (check_flag(3,champix,champiy) 
+						and champix!=7 
+						and champiy!=8)
+			then
+			mset(champix,champiy,36)
+			compteur_champi+=1
+			end
 		end
 	end
-end
 
 --gameover
 
@@ -283,35 +271,35 @@ end
 
 --win the game 
 
-function spawn_win()
+function spawn_ball()
 
 	if (p.hotdogs==3
-	and alreadyc==false) then
+	and is_there_ball==false) then
 	
-		winx = flr(rnd(30))
-		winy = flr(rnd(30))
+		ballx = flr(rnd(30))
+		bally = flr(rnd(30))
 		new_win={
-			x = winx*8,
-			y = winy*8
+			x = ballx*8,
+			y = bally*8
 			}
-		if (check_flag(3,winx,winy) 
-		and alreadyc==false)
+		if (check_flag(3,ballx,bally) 
+		and is_there_ball==false)
 		 then
-			mset(winx,winy,49)
-			alreadyc=true
+			mset(ballx,bally,49)
+			is_there_ball=true
 		end
 	end
 end
 
 
-function pick_win(x,y)
+function pick_ball(x,y)
  music(03)
 	mset(x,y,3)
 end
 
-function interact_win(x,y)
+function interact_ball(x,y)
 	if check_flag(5,x,y) then
-		pick_win(x,y)
+		pick_ball(x,y)
 		state=2
 	end
 end
@@ -333,20 +321,20 @@ end
 --compteur temps
 --pour piece
 
-counttime=0
+count_time_since_ball=0
 
-function count_time()
-	if (alreadyc==true) then
-	counttime+=1
+function count_ball_time()
+	if (is_there_ball==true) then
+	count_time_since_ball+=1
 	end
 end
 
-function coin_del()
-	if (counttime==200) then
-		alreadyc=false
-		counttime=0
-		--create_message(winx.."et"..winy)
-		mset(winx,winy,3)
+function delete_ball()
+	if (count_time_since_ball==200) then
+		is_there_ball=false
+		count_time_since_ball=0
+		--create_message(ballx.."et"..bally)
+		mset(ballx,bally,3)
 	end
 end
 -->8
@@ -418,7 +406,7 @@ function update_text()
 		new_text({"hmmm les saucisses","c'est delicieux !"})
 		text.hotdog_displayed=true
 	end
-	if (alreadyc==true and text.ball_displayed==false) then
+	if (is_there_ball==true and text.ball_displayed==false) then
 		new_text({"la babaaaaaalle !"})
 		text.ball_displayed=true
 	end
@@ -460,10 +448,19 @@ function draw_text()
 		local ty=y-5+(i*6) --hauteur texte=6px
 		print(txt,tx,ty,7)
 	end
-	
-	
+end
+-->8
+----fonction pour print log
+
+message=""
+
+function create_message(mess)
+	message = mess
 end
 
+function draw_message()
+	print(message,20,20,5)
+end 
 __gfx__
 00000000999499943333333333333333333b333399949994999499949994999444444444444444444444444433333334333333334333333344444444333b3334
 00000000444444443333e333333333333b3333b34000000440044404400444444333333333333333333333343333333433333333433333333b3333b33b3333b4
