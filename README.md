@@ -4,7 +4,7 @@
 
 :martial_arts_uniform: 3 teammates
 
-:checkered_flag: 3 weekes since the beginning of the cursus at Ada Tech School
+:checkered_flag: 3 weeks since the beginning of the cursus at Ada Tech School
 
 :calendar: seven days of work
 
