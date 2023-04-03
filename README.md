@@ -8,6 +8,7 @@
 
 :calendar: seven days of work
 
+: Jouer à Hotdog master : https://www.lexaloffle.com/bbs/?tid=50152
 
 🕹️ PICO-8 <br>
 HOT DOG MASTER<br>
